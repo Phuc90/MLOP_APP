@@ -95,8 +95,7 @@ def form_response(dict_request):
 def api_response(request):
     try:
         if validate_input(request):
-            data = np.array([list(request.values())])
-            print(data)
+            data = np.array([list(request.values())]) 
 
             response = predict(data)
             response = encode_to_json(response)
