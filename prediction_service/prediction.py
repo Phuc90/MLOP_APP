@@ -70,7 +70,7 @@ def validate_input(dict_request):
         if col not in actual_cols:
             raise NotInCols
 
-    def _validate_values(col,val):
+    def _validate_values(col):
         schema = get_schema()
         if not (schema[col]['min'] <= float(dict_request[col]) <= schema[col]['max']):
             raise NotInRange
@@ -79,27 +79,28 @@ def validate_input(dict_request):
 
     for col, val in dict_request.items():
         _validate_cols(col)
-        _validate_values(col,val)
+        _validate_values(col)
 
     return True
 
 
 def form_response(dict_request):
     if validate_input(dict_request):
-        data = dict_request.values()
-        data = [list(map(float,data))]
+        data = list(dict_request.values())
+        data = np.array([[float(i) for i in data]])
         response = predict(data)
         return response
 
 
 def api_response(request):
     try:
-        data = np.array([list(request.json.values())])
+        if validate_input(request):
+            data = np.array([list(request.values())])
+            print(data)
 
-        response = predict(data)
-        response = encode_to_json(response)
-        return response
+            response = predict(data)
+            response = encode_to_json(response)
+            return response
     except Exception as e:
-        print(e)
         response = {"the_expected_range":get_schema(),'response':str(e)}
         return response

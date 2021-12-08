@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import yaml
-import joblib
-import numpy as np
-import json
 from prediction_service import prediction
 
 params_path = "params.yaml"
@@ -28,10 +25,9 @@ def index():
             if request.form:
                 data = dict(request.form)
                 response = prediction.form_response(data)
-                response = prediction.predict(data)
                 return render_template('index.html',response=response)
             elif request.json:
-                response = prediction.api_response(request)
+                response = prediction.api_response(request.json)
                 return jsonify(response)
 
         except Exception as e:
