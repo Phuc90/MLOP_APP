@@ -100,6 +100,10 @@ def api_response(request):
             response = predict(data)
             response = encode_to_json(response)
             return response
-    except Exception as e:
+    except NotInRange as e:
+        response = {"the_expected_range":get_schema(),'response':str(e)}
+        return response
+
+    except NotInCols as e:
         response = {"the_expected_range":get_schema(),'response':str(e)}
         return response
